@@ -1,0 +1,20 @@
+world[n_Integer?Positive] := RandomInteger[{0, 1}, {n, n}]
+Transpose[world[10]]
+matr = world[150];
+neighbours[matr_List] := RotateLeft[matr] + RotateRight[matr] + Transpose[RotateLeft[Transpose[matr]]] + Transpose[RotateRight[Transpose[matr]]] + Transpose[RotateRight[Transpose[RotateLeft[matr]]]] + Transpose[RotateRight[Transpose[RotateRight[matr]]]] + Transpose[RotateLeft[Transpose[RotateLeft[matr]]]] + Transpose[RotateLeft[Transpose[RotateRight[matr]]]]
+{MatrixForm[matr], MatrixForm[neighbours[matr]]};
+kill = Select[Position[matr, 1],neighbours[matr]〚Sequence @@ #〛 > 3  neighbours[matr]〚Sequence @@ #〛 < 2 &];
+neighbours[matr]〚Sequence @@ {1, 1}〛
+kill // Length
+Position[matr, 1] // Length
+live = Select[Position[matr, 0], neighbours[matr]〚Sequence @@ #〛 == 3 &];
+MatrixForm[ReplacePart[matr, Join[# → 0 & /@ kill, # → 1 & /@ live]]];
+Join[# → 0&/@kill, # → 1&/@live];
+Monitor[For[i = 0, i < 50, i++, With[{ne = neighbours[matr]},
+kill = Select[Position[matr, 1], ne〚Sequence @@ #〛 > 3  ne〚Sequence @@ #〛 < 2 &]; live = Select[Position[matr, 0], ne〚Sequence @@ #〛 == 3 &];
+matr = ReplacePart[matr, Join[# → 0 & /@ kill, # → 1 & /@ live]];];
+], {i, MatrixPlot@matr}]
+
+flex= {{0,0,0,0,1,0,0,0,0,0,1,0,0,0,0}, {0,0,0,0,1,0,0,0,0,0,1,0,0,0,0}, {0,0,0,0,1,1,0,0,0,1,1,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, {1,1,1,0,0,1,1,0,1,1,0,0,1,1,1}, {0,0,1,0,1,0,1,0,1,0,1,0,1,0,0}, {0,0,0,0,1,1,0,0,0,1,1,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,1,1,0,0,0,1,1,0,0,0,0}, {0,0,1,1,1,0,1,0,1,0,1,1,1,0,0}, {1,1,1,0,0,1,1,0,1,1,0,0,1,1,1}, {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,1,1,0,0,0,1,1,0,0,0,0}, {0,0,0,0,1,0,0,0,0,0,1,0,0,0,0}, {0,0,0,0,1,0,0,0,0,0,1,0,0,0,0}};
+Monitor[For[i = 1, i < 10, i ++, kill = Select[Position[flex, 1], neighbours[flex]〚Sequence @@ #〛 > 3  neighbours[flex]〚Sequence @@ #〛 < 2 &];
+live = Select[Position[flex, 0], neighbours[flex]〚Sequence @@ #〛 == 3 &]; flex = ReplacePart[flex, Join[# → 0 & /@ kill, # → 1 & /@ live]]; Pause[0.3];], {i, MatrixPlot[flex]}]
